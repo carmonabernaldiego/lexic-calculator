@@ -143,8 +143,10 @@ button:hover {
 }
 
 .tree-branch {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0 10px 0;
+  width: 30px;
+  height: 30px;
+  border-left: 1px solid black;
+  border-top: 1px solid black; /* Cambiado a border-top */
+  transform: rotate(45deg); /* Cambiado a 135 grados */
+  margin: 23px auto 0;
 }

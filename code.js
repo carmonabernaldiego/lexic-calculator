@@ -1,7 +1,17 @@
 // Definición de la clase Node
 class Node {
   constructor(value) {
-    this.value = value;
+    // Verificar si el valor es un número y no es NaN
+    if (!isNaN(value)) {
+      this.value = value;
+    } else {
+      // Convertir el valor a un número flotante solo si es una cadena que contiene un punto decimal
+      if (typeof value === "string" && value.includes(".")) {
+        this.value = parseFloat(value);
+      } else {
+        this.value = value;
+      }
+    }
     this.left = null;
     this.right = null;
   }
@@ -13,27 +23,30 @@ function buildDerivationTree(expression) {
   let operators = ["+", "-", "×", "÷"];
   let operand = "";
 
-  for (let i = 0; i < expression.length; i++) {
-    let character = expression[i];
-    if (operators.includes(character)) {
+  // Dividir la expresión en tokens
+  let tokens = expression.match(/\d+(\.\d+)?|[+\-×÷]/g);
+
+  for (let i = 0; i < tokens.length; i++) {
+    let token = tokens[i];
+    if (operators.includes(token)) {
       if (operand !== "") {
-        stack.push(new Node(parseInt(operand))); // Agrega el operando a la pila
-        operand = ""; // Reinicia el operando
+        stack.push(new Node(parseFloat(operand))); // Convertir el operando a flotante si es necesario
+        operand = ""; // Reiniciar el operando
       }
-      // Agrega el operador a la pila
-      stack.push(new Node(character));
+      // Agregar el operador a la pila
+      stack.push(new Node(token));
     } else {
-      // Construye el operando
-      operand += character;
+      // Construir el operando
+      operand += token;
     }
   }
 
-  // Agrega el último operando a la pila si existe
+  // Agregar el último operando a la pila si existe
   if (operand !== "") {
-    stack.push(new Node(parseInt(operand)));
+    stack.push(new Node(parseFloat(operand)));
   }
 
-  // Construye el árbol recursivamente desde la pila
+  // Construir el árbol recursivamente desde la pila
   while (stack.length > 1) {
     let right = stack.pop();
     let operator = stack.pop();
@@ -43,7 +56,7 @@ function buildDerivationTree(expression) {
     stack.push(operator);
   }
 
-  return stack[0]; // Retorna el nodo raíz del árbol
+  return stack[0]; // Retornar el nodo raíz del árbol
 }
 
 // Función para imprimir el árbol de derivación
