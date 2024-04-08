@@ -112,3 +112,39 @@ button:hover {
   margin-top: 50px;
   margin-right: 25px;
 }
+
+#tree {
+  width: 50%;
+  margin: auto;
+}
+
+.tree-node {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0 5px;
+  width: 30px;
+}
+
+.tree-node.operators {
+  font-weight: bold;
+  margin: auto;
+}
+
+.tree-node.node-left {
+  float: left;
+}
+
+.tree-node.node-right {
+  float: right;
+}
+
+.tree-branch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 10px 0;
+}

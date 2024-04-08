@@ -439,7 +439,7 @@ function printLexicalAnalysis() {
       lexical_analysis[i].Valor +
       ", Posicion " +
       lexical_analysis[i].Posicion;
-    lexical_result.innerText += line + "\n";
+    lexical_result.innerText += line + "\n\n";
   }
 }
 
