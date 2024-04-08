@@ -1,3 +1,98 @@
+// Definición de la clase Node
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+// Función para construir el árbol de derivación
+function buildDerivationTree(expression) {
+  let stack = [];
+  let operators = ["+", "-", "×", "÷"];
+  let operand = "";
+
+  for (let i = 0; i < expression.length; i++) {
+    let character = expression[i];
+    if (operators.includes(character)) {
+      if (operand !== "") {
+        stack.push(new Node(parseInt(operand))); // Agrega el operando a la pila
+        operand = ""; // Reinicia el operando
+      }
+      // Agrega el operador a la pila
+      stack.push(new Node(character));
+    } else {
+      // Construye el operando
+      operand += character;
+    }
+  }
+
+  // Agrega el último operando a la pila si existe
+  if (operand !== "") {
+    stack.push(new Node(parseInt(operand)));
+  }
+
+  // Construye el árbol recursivamente desde la pila
+  while (stack.length > 1) {
+    let right = stack.pop();
+    let operator = stack.pop();
+    let left = stack.pop();
+    operator.left = left;
+    operator.right = right;
+    stack.push(operator);
+  }
+
+  return stack[0]; // Retorna el nodo raíz del árbol
+}
+
+// Función para imprimir el árbol de derivación
+function printDerivationTree(node, element) {
+  element.innerHTML = ""; // Vacía el contenido del elemento antes de agregar los nodos del árbol
+
+  if (node == null) return;
+
+  // Llama recursivamente a la función para imprimir los nodos del árbol
+  printNode(node, element);
+
+  // Función recursiva para imprimir los nodos del árbol
+  function printNode(node, element) {
+    // Crea un elemento div para representar el nodo
+    let nodeElement = document.createElement("div");
+    nodeElement.className = "tree-node";
+    nodeElement.textContent =
+      node.value instanceof Node ? node.value.value : node.value;
+
+    if (node.left != null) {
+      nodeElement.classList.add("operators");
+    }
+
+    // Agrega el elemento del nodo al contenedor
+    element.appendChild(nodeElement);
+
+    // Si el nodo tiene hijos, crea un elemento div para representar la rama del árbol
+    if (node.left !== null || node.right !== null) {
+      let branchElement = document.createElement("div");
+      branchElement.className = "tree-branch";
+      element.appendChild(branchElement);
+
+      // Si el nodo tiene un hijo izquierdo, imprime el hijo izquierdo
+      if (node.left !== null) {
+        printNode(node.left, element);
+        let leftNode = element.lastChild;
+        leftNode.classList.add("node-left");
+      }
+
+      // Si el nodo tiene un hijo derecho, imprime el hijo derecho
+      if (node.right !== null) {
+        printNode(node.right, element);
+        let rightNode = element.lastChild;
+        rightNode.classList.add("node-right");
+      }
+    }
+  }
+}
+
 var operators = ["+", "-", "/", "*"];
 
 var box = null;
@@ -19,6 +114,17 @@ var key_combination = [];
 
 // Array para almacenar el análisis léxico
 var lexical_analysis = [];
+
+// Función para mostrar el resultado de la calculadora, construir el árbol de derivación y realizar el análisis léxico
+function showCalculationResult(expression) {
+  let tree = buildDerivationTree(expression);
+  let treeElement = document.getElementById("tree");
+  printDerivationTree(tree, treeElement);
+
+  // Realizar el análisis léxico
+  addLexicalAnalysis(expression.split(" "));
+  printLexicalAnalysis();
+}
 
 function button_number(button) {
   operator = document.getElementsByClassName("operator");
@@ -134,6 +240,8 @@ function button_number(button) {
 
         // Imprimir el resultado léxico
         printLexicalAnalysis();
+        // Llamar a la función showCalculationResult con la expresión completa
+        showCalculationResult(last_operation_history.innerText);
       } else if (calc_operator != null) {
         last_operation_history.innerText = temp_num + " " + last_operator;
         calc_operator = button;
@@ -431,18 +539,19 @@ function printLexicalAnalysis() {
   lexical_result.innerText = ""; // Limpiar el contenido anterior
   for (var i = 0; i < lexical_analysis.length; i++) {
     var line =
-      "Linea " +
+      "Línea " +
       lexical_analysis[i].Linea +
       ", Tipo " +
       lexical_analysis[i].Tipo +
       ", Valor " +
       lexical_analysis[i].Valor +
-      ", Posicion " +
+      ", Posición " +
       lexical_analysis[i].Posicion;
     lexical_result.innerText += line + "\n\n";
   }
 }
 
+// Función para agregar el contenido del cuadro a los análisis léxicos
 function addBoxContentToLexicalAnalysis(total) {
   box = document.getElementById("box");
   var box_content = total;
