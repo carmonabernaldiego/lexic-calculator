@@ -136,7 +136,6 @@ function showCalculationResult(expression) {
 
   // Realizar el análisis léxico
   addLexicalAnalysis(expression.split(" "));
-  printLexicalAnalysis();
 }
 
 function button_number(button) {
@@ -566,7 +565,6 @@ function printLexicalAnalysis() {
 
 // Función para agregar el contenido del cuadro a los análisis léxicos
 function addBoxContentToLexicalAnalysis(total) {
-  box = document.getElementById("box");
   var box_content = total;
   var type;
 
